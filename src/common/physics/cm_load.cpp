@@ -35,6 +35,7 @@ Maryland 20850 USA.
 // cmodel.c -- model loading
 
 #include "cm_local.h"
+#include "Physics.h"
 
 // to allow boxes to be treated as brush models, we allocate
 // some extra indexes along with those needed by the map
@@ -988,6 +989,11 @@ void CM_LoadMap( const char *name, const void* buffer, qboolean clientload )
 	{
 		Q_strncpyz( cm.name, name, sizeof( cm.name ) );
 	}
+
+	Physics::Shutdown();
+	Physics::Init();
+	Physics::Load(buffer);
+
 }
 
 /*

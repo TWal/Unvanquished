@@ -573,17 +573,23 @@ set( COMMONLIST
   ${COMMON_DIR}/IPC.h
   ${COMMON_DIR}/String.cpp
   ${COMMON_DIR}/String.h
-  ${COMMON_DIR}/cm/cm_load.cpp
-  ${COMMON_DIR}/cm/cm_trisoup.cpp
-  ${COMMON_DIR}/cm/cm_patch.cpp
-  ${COMMON_DIR}/cm/cm_plane.cpp
-  ${COMMON_DIR}/cm/cm_polylib.cpp
-  ${COMMON_DIR}/cm/cm_test.cpp
-  ${COMMON_DIR}/cm/cm_trace.cpp
-  ${COMMON_DIR}/cm/cm_local.h
-  ${COMMON_DIR}/cm/cm_patch.h
-  ${COMMON_DIR}/cm/cm_polylib.h
-  ${COMMON_DIR}/cm/cm_public.h
+  ${COMMON_DIR}/physics/cm_load.cpp
+  ${COMMON_DIR}/physics/cm_trisoup.cpp
+  ${COMMON_DIR}/physics/cm_patch.cpp
+  ${COMMON_DIR}/physics/cm_plane.cpp
+  ${COMMON_DIR}/physics/cm_polylib.cpp
+  ${COMMON_DIR}/physics/cm_test.cpp
+  ${COMMON_DIR}/physics/cm_trace.cpp
+  ${COMMON_DIR}/physics/cm_local.h
+  ${COMMON_DIR}/physics/cm_patch.h
+  ${COMMON_DIR}/physics/cm_polylib.h
+  ${COMMON_DIR}/physics/cm_public.h
+  ${COMMON_DIR}/physics/cm_public.h
+  ${COMMON_DIR}/physics/BspLoader.cpp
+  ${COMMON_DIR}/physics/BspLoader.h
+  ${COMMON_DIR}/physics/Physics.cpp
+  ${COMMON_DIR}/physics/Physics.h
+  ${COMMON_DIR}/physics/PhysicsPrivate.h
 )
 
 set( RENDERERLIST
@@ -1262,6 +1268,12 @@ set( LIBS_ENGINE ${LIBS_ENGINE} ${NETTLE_LIBRARIES} )
 find_package( GMP REQUIRED )
 include_directories( ${GMP_INCLUDE_DIR} )
 set( LIBS_ENGINE ${LIBS_ENGINE} ${GMP_LIBRARIES} )
+set( LIBS_BASE ${LIBS_BASE} ${GMP_LIBRARIES} )
+
+# CGAL
+find_package( CGAL REQUIRED )
+include_directories( ${CGAL_INCLUDE_DIR} )
+set( LIBS_BASE ${LIBS_BASE} ${CGAL_LIBRARY} )
 
 # Speex
 if( BUILD_CLIENT AND USE_VOIP )
@@ -1360,6 +1372,11 @@ if( BUILD_CLIENT OR BUILD_TTY_CLIENT )
   include_directories( ${CURL_INCLUDE_DIRS} )
   set( LIBS_CLIENTBASE ${LIBS_CLIENTBASE} ${CURL_LIBRARIES} )
 endif()
+
+# Bullet
+find_package( Bullet REQUIRED )
+include_directories( ${BULLET_INCLUDE_DIR} )
+set( LIBS_BASE ${LIBS_BASE} ${BULLET_COLLISION_LIBRARY} ${BULLET_MATH_LIBRARY} )
 
 # Curses, pdcurses on Windows and ncursesw on Unix
 # Not supported on mac because the included version is too old

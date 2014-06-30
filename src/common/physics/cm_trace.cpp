@@ -34,6 +34,7 @@ Maryland 20850 USA.
 
 #include "cm_local.h"
 #include "cm_patch.h"
+#include "PhysicsPrivate.h"
 
 // always use bbox vs. bbox collision and never capsule vs. bbox or vice versa
 //#define ALWAYS_BBOX_VS_BBOX
@@ -2302,6 +2303,64 @@ void CM_BoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
                   vec3_t mins, vec3_t maxs, clipHandle_t model, int brushmask, traceType_t type )
 {
 	CM_Trace( results, start, end, mins, maxs, model, vec3_origin, brushmask, type, NULL );
+	Physics::TraceResults myTrace;
+	Physics::BoxTrace(start, end, mins, maxs, brushmask, myTrace);
+
+	if (Distance(start, end) >= 3000) {
+		return; // Skip the crazy Xhair traces
+	}
+
+	static unsigned int total = 0;
+	static unsigned int good = 0;
+
+	++total;
+
+	if (DistanceSquared(results->endpos, myTrace.endpos) < 1.0f) {
+		++good;
+	} else {
+		Log::Debug("");
+		Log::Debug("Start: (%?, %?, %?)", start[0], start[1], start[2]);
+		Log::Debug("End: (%?, %?, %?)", end[0], end[1], end[2]);
+		if(mins) {
+			Log::Debug("Mins: (%?, %?, %?)", mins[0], mins[1], mins[2]);
+		} else {
+			Log::Debug("Mins: (0, 0, 0)");
+		}
+		if(maxs) {
+			Log::Debug("Maxs: (%?, %?, %?)", maxs[0], maxs[1], maxs[2]);
+		} else {
+			Log::Debug("Maxs: (0, 0, 0)");
+		}
+
+		Log::Debug("Result: %?%%", (float(good))/total*100);
+
+		Log::Debug("Model: %?", model);
+		Log::Debug("Brushmask: %?", brushmask);
+		Log::Debug("Type: %?", type);
+
+		Log::Debug("CM Trace:");
+		Log::Debug(" - allsolid: %?", results->allsolid);
+		Log::Debug(" - startsolid: %?", results->startsolid);
+		Log::Debug(" - fraction: %?", results->fraction);
+		Log::Debug(" - endpos: (%?, %?, %?)", results->endpos[0], results->endpos[1], results->endpos[2]);
+		Log::Debug(" - plane: (%?, %?, %?) %?", results->plane.normal[0], results->plane.normal[1], results->plane.normal[2], results->plane.dist);
+		Log::Debug(" - surfaceFlags: %?", results->surfaceFlags);
+		Log::Debug(" - contents: %?", results->contents);
+		Log::Debug(" - entityNum: %?", results->entityNum);
+		Log::Debug(" - lateralFraction: %?", results->lateralFraction);
+
+		Log::Debug("Bullet Trace:");
+		Log::Debug(" - fraction: %?", myTrace.fraction);
+		Log::Debug(" - endpos: (%?, %?, %?)", myTrace.endpos[0], myTrace.endpos[1], myTrace.endpos[2]);
+		Log::Debug(" - normal: (%?, %?, %?)", myTrace.normal[0], myTrace.normal[1], myTrace.normal[2]);
+		//Log::Debug(" - debug1: (%?, %?, %?)", myTrace.debug1[0], myTrace.debug1[1], myTrace.debug1[2]);
+		//Log::Debug(" - debug2: (%?, %?, %?)", myTrace.debug2[0], myTrace.debug2[1], myTrace.debug2[2]);
+		//Log::Debug(" - debug3: (%?, %?, %?)", myTrace.debug3[0], myTrace.debug3[1], myTrace.debug3[2]);
+		//Log::Debug(" - debug4: (%?, %?, %?)", myTrace.debug4[0], myTrace.debug4[1], myTrace.debug4[2]);
+		Log::Debug("");
+	}
+	//results->fraction = myTrace.fraction;
+	//VectorCopy(myTrace.endpos, results->endpos);
 }
 
 /*
