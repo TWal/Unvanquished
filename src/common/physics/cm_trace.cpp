@@ -2319,25 +2319,29 @@ void CM_BoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 		++good;
 	} else {
 		Log::Debug("");
-		Log::Debug("Start: (%?, %?, %?)", start[0], start[1], start[2]);
-		Log::Debug("End: (%?, %?, %?)", end[0], end[1], end[2]);
+		Log::Debug("Ray Properties:");
+		Log::Debug(" - Start: (%?, %?, %?)", start[0], start[1], start[2]);
+		Log::Debug(" - End: (%?, %?, %?)", end[0], end[1], end[2]);
 		if(mins) {
-			Log::Debug("Mins: (%?, %?, %?)", mins[0], mins[1], mins[2]);
+			Log::Debug(" - Mins: (%?, %?, %?)", mins[0], mins[1], mins[2]);
 		} else {
-			Log::Debug("Mins: (0, 0, 0)");
+			Log::Debug(" - Mins: (0, 0, 0)");
 		}
 		if(maxs) {
-			Log::Debug("Maxs: (%?, %?, %?)", maxs[0], maxs[1], maxs[2]);
+			Log::Debug(" - Maxs: (%?, %?, %?)", maxs[0], maxs[1], maxs[2]);
 		} else {
-			Log::Debug("Maxs: (0, 0, 0)");
+			Log::Debug(" - Maxs: (0, 0, 0)");
 		}
 
+		Log::Debug(" - Model: %?", model);
+		Log::Debug(" - Brushmask: %?", brushmask);
+		Log::Debug(" - Type: %?", type);
+
 		Log::Debug("Result: %?%%", (float(good))/total*100);
+		Log::Debug("Fraction: %? (cm) %? (bullet)", results->fraction, myTrace.fraction);
+		Log::Debug("EndPos: (%?, %?, %?) (cm) (%?, %?, %?) (bullet)", results->endpos[0], results->endpos[1], results->endpos[2], myTrace.endpos[0], myTrace.endpos[1], myTrace.endpos[2]);
 
-		Log::Debug("Model: %?", model);
-		Log::Debug("Brushmask: %?", brushmask);
-		Log::Debug("Type: %?", type);
-
+#if 0
 		Log::Debug("CM Trace:");
 		Log::Debug(" - allsolid: %?", results->allsolid);
 		Log::Debug(" - startsolid: %?", results->startsolid);
@@ -2353,6 +2357,8 @@ void CM_BoxTrace( trace_t *results, const vec3_t start, const vec3_t end,
 		Log::Debug(" - fraction: %?", myTrace.fraction);
 		Log::Debug(" - endpos: (%?, %?, %?)", myTrace.endpos[0], myTrace.endpos[1], myTrace.endpos[2]);
 		Log::Debug(" - normal: (%?, %?, %?)", myTrace.normal[0], myTrace.normal[1], myTrace.normal[2]);
+#endif
+
 		//Log::Debug(" - debug1: (%?, %?, %?)", myTrace.debug1[0], myTrace.debug1[1], myTrace.debug1[2]);
 		//Log::Debug(" - debug2: (%?, %?, %?)", myTrace.debug2[0], myTrace.debug2[1], myTrace.debug2[2]);
 		//Log::Debug(" - debug3: (%?, %?, %?)", myTrace.debug3[0], myTrace.debug3[1], myTrace.debug3[2]);

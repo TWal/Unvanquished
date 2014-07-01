@@ -189,10 +189,15 @@ namespace Physics {
 		bulletToQ3(callback.m_hitNormalWorld, results.normal);
 
 		btVector3 diff = to - from;
-		btVector3 rawRes = from + fraction * diff;;
+		btVector3 rawRes = from + fraction * diff;
 		float traceLength = diff.length();
 
-		btVector3 tamperedRes = rawRes - diff.normalized() * std::min(1.0f / 16.0f, traceLength);
+		btVector3 tamperedRes;
+		if(traceLength < FLT_EPSILON) {
+			tamperedRes = rawRes;
+		} else {
+			tamperedRes = rawRes - diff.normalized() * std::min(1.0f / 16.0f, traceLength);
+		}
 		bulletToQ3(tamperedRes, results.endpos);
 
 		//if(callback.triangleIndex != 0 && callback.triangleIndex != -1) {
